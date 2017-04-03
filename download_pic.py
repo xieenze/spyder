@@ -106,3 +106,4 @@ for i in range(len(nexturls)):
 # folders=['d:/pachong/pachong{}'.format(str(i)) for i in range(0,10,1)]批量创建文件夹
 # for folder in folders:
 #     os.mkdir(folder)
+
