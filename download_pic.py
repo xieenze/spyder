@@ -41,7 +41,7 @@ def download_pic(url,path):#下载某一个帖子中图片
 def getnexturls(rooturl):#获取这一页所有帖子的url
     source_code = requests.get(rooturl)
     source_code.encoding = 'gb2312'
-    plain_text = source_code.text
+    plain_text = source_code.text 
     Soup = BeautifulSoup(plain_text, 'lxml')
     titles = Soup.select('tbody > tr > td.tal > h3 > a')
     errors = Soup.select('td.tal > h3 > a > b > font')
