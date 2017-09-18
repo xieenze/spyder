@@ -1,0 +1,64 @@
+#coding:utf8
+
+#http://www.cnblogs.com/fnng/p/3157639.html
+#http://blog.csdn.net/glory1234work2115/article/details/53913951
+import time
+from selenium import webdriver
+import pandas as pd
+
+loginUrl = 'http://www.dytt8.net/html/gndy/dyzz/index.html'
+
+
+#禁止加载图片，密码保存弹出框,启动时设置默认语言为中文 UTF-8
+chrome_options = webdriver.ChromeOptions()
+prefs = {"profile.managed_default_content_settings.images":2}
+prefs["credentials_enable_service"] = False
+prefs["profile.password_manager_enabled"] = False
+chrome_options.add_experimental_option("prefs",prefs)
+#chrome_options.add_argument('lang=zh_CN.UTF-8')
+
+
+
+driver = webdriver.Chrome(executable_path='/usr/local/bin/chromedriver',chrome_options=chrome_options)
+driver.implicitly_wait(10) # seconds
+driver.get(loginUrl) #进入界面
+
+
+hrefs = [loginUrl]+['http://www.dytt8.net/html/gndy/dyzz/list_23_{}.html'.format(str(i))  for i in range (2,165,1)]
+
+for i in range (116,165,1):
+    #访问每一页
+    driver.get(hrefs[i])
+    elems = driver.find_elements_by_css_selector('a.ulink')
+    names=[]
+    links=[]
+    download_urls=[]
+    for elem in elems:
+        name=elem.text
+        link=elem.get_attribute('href')
+        names.append(name)
+        links.append(link)
+    for link in links:
+        time.sleep(0.5)
+        driver.get(link)
+        download_url = driver.find_element_by_css_selector('tr > td > a')
+        download_urls.append(download_url.get_attribute('thunderrestitle'))
+
+    page_info=[names,links,download_urls]
+    df=pd.DataFrame(page_info)
+    df_T = df.T
+    df_T.columns = ["名字", "网址", "迅雷下载链接"]
+    if i==0:
+        df_T.to_csv("dianying.csv", index=False, encoding="utf_8_sig", mode="a")
+    else:
+        df_T.to_csv("dianying.csv", index=False, encoding="utf_8_sig", mode="a",header=False)
+    print "第"+str(i)+"页获取成功！"
+
+
+
+
+
+
+
+
+
